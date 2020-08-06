@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export interface IDragData {
   x: number;
@@ -76,16 +76,18 @@ export default class ReactPanZoom extends React.PureComponent<
   public state = this.getInitialState();
 
   // tslint:disable-next-line: member-ordering
-  public componentWillReceiveProps(nextProps: IReactPanZoomProps) {
-    const { matrixData } = this.state;
+  static getDerivedStateFromProps(nextProps: IReactPanZoomProps, state: any) {
+    const { matrixData } = state;
     if (matrixData[0] !== nextProps.zoom) {
-      const newMatrixData = [...this.state.matrixData];
+      const newMatrixData = [...state.matrixData];
       newMatrixData[0] = nextProps.zoom || newMatrixData[0];
       newMatrixData[3] = nextProps.zoom || newMatrixData[3];
-      this.setState({
+      return {
         matrixData: newMatrixData,
-      });
+      };
     }
+
+    return state;
   }
   // tslint:disable-next-line: member-ordering
   public reset = () => {
@@ -125,7 +127,7 @@ export default class ReactPanZoom extends React.PureComponent<
   public render() {
     return (
       <div
-        className={`pan-container ${this.props.className || ''}`}
+        className={`pan-container ${this.props.className || ""}`}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onTouchStart={this.onTouchStart}
@@ -135,13 +137,13 @@ export default class ReactPanZoom extends React.PureComponent<
         onClick={this.onClick}
         style={{
           height: this.props.height,
-          userSelect: 'none',
+          userSelect: "none",
           width: this.props.width,
         }}
-        ref={ref => (this.panWrapper = ref)}
+        ref={(ref) => (this.panWrapper = ref)}
       >
         <div
-          ref={ref => (ref ? (this.panContainer = ref) : null)}
+          ref={(ref) => (ref ? (this.panContainer = ref) : null)}
           style={{
             transform: `matrix(${this.state.matrixData.toString()})`,
           }}
@@ -158,7 +160,7 @@ export default class ReactPanZoom extends React.PureComponent<
   private panStart = (
     pageX: number,
     pageY: number,
-    event: React.MouseEvent<EventTarget> | React.TouchEvent<EventTarget>,
+    event: React.MouseEvent<EventTarget> | React.TouchEvent<EventTarget>
   ) => {
     if (!this.props.enablePan) {
       return;
@@ -178,7 +180,7 @@ export default class ReactPanZoom extends React.PureComponent<
       mouseDown: true,
     });
     if (this.panWrapper) {
-      this.panWrapper.style.cursor = 'move';
+      this.panWrapper.style.cursor = "move";
     }
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
@@ -195,7 +197,7 @@ export default class ReactPanZoom extends React.PureComponent<
       mouseDown: false,
     });
     if (this.panWrapper) {
-      this.panWrapper.style.cursor = '';
+      this.panWrapper.style.cursor = "";
     }
     if (this.props.onPan) {
       this.props.onPan(this.state.matrixData[4], this.state.matrixData[5]);
